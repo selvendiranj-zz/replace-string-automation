@@ -1,0 +1,40 @@
+for /f "delims=" %%x in (Parameter.txt) do (set "%%x")
+
+for /f "tokens=1,3* delims=:" %%b in ("%string%") do (
+      SET SEARCHTEXT=%%b
+      SET REPLACETEXT=%%c
+      SET modified=!string:%SEARCHTEXT%=%REPLACETEXT%!
+      
+      echo !modified! >> %OUTTEXTFILE%
+   )
+
+
+@echo off &setlocal
+set "search=%~1"
+set "replace=%~2"
+set "textfile=%~3"
+set "newfile=%~4"
+(for /f "delims=" %%i in (%textfile%) do (
+    set "line=%%i"
+    setlocal enabledelayedexpansion
+    set "line=!line:%search%=%replace%!"
+    echo(!line!
+    endlocal
+)) > "%newfile%"
+
+
+@echo off 
+setlocal enableextensions disabledelayedexpansion
+
+set "search=%1"
+set "replace=%2"
+set "textFile=%3"
+
+for /f "delims=" %%i in ('type "%textFile%" ^& break ^> "%textFile%" ') do (
+    set "line=%%i"
+    setlocal enabledelayedexpansion
+    set "line=!line:%search%=%replace%!"
+    >> "%textFile%" echo(!line!
+    endlocal
+)
+
